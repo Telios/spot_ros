@@ -1,7 +1,7 @@
 <launch>
-  <arg name="username" default="dummyusername" />
-  <arg name="password" default="dummypassword" />
-  <arg name="hostname" default="192.168.50.3" />
+  <arg name="username" default="ros" />
+  <arg name="password" default="1234567890" />
+  <arg name="hostname" default="192.168.80.3" />
   <arg name="estop_timeout" default="9.0"/>
   <arg name="autonomy_enabled" default="true"/>
   <!-- In m/s. 0 applies spot's internal limits -->
@@ -12,7 +12,7 @@
   <arg name="driver_config" default="$(find spot_driver)/config/spot_ros.yaml"/>
 
   <include file="$(find spot_description)/launch/description.launch" />
-  <include file="$(find spot_driver)/launch/control.launch" />
+  <!-- <include file="$(find spot_driver)/launch/control.launch" /> -->
   <include file="$(find spot_driver)/launch/accessories.launch" />
 
   <node pkg="spot_driver" type="spot_ros" name="spot_ros"  ns="spot" output="screen">
