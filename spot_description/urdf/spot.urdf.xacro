@@ -20,6 +20,15 @@
         <child link="base_link" />
     </joint>
 
+
+    <link name="base_footprint"/>
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0.0 0.0 -0.5" rpy="0 0 0"/>
+    </joint>
+
+
     <link name="front_rail"/>
     <joint name="front_rail_joint" type="fixed">
         <origin xyz="0.223 0 0.0805" rpy="0 0 0" />

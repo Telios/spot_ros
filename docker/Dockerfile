@@ -3,21 +3,32 @@
 FROM osrf/ros:noetic-desktop-full 
 SHELL ["/bin/bash", "-c"]
 
+# Install tools
 RUN apt-get update && apt-get -y install git \
     python3-pip \
     python3-catkin-tools 
 RUN pip3 install bosdyn-client bosdyn-mission bosdyn-api bosdyn-core
 
+# Pull source code
 RUN mkdir -p ./catkin_ws/src
 WORKDIR /catkin_ws/src
 RUN git clone https://github.com/telios/spot_ros.git
+
+# Install dependencies and build
 WORKDIR /catkin_ws
 RUN source /opt/ros/noetic/setup.bash && apt-get update && \
     rosdep update && rosdep install --from-paths src --ignore-src -r -y
 RUN source /opt/ros/noetic/setup.bash && catkin build
 
+# Set environment variables
 ENV SPOT_VELODYNE_HOST 192.168.1.201
 ENV SPOT_VELODYNE_PORT 2370
+ENV SPOT_PACK 1
+ENV SPOT_LIDAR_MOUNT 1
+ENV SPOT_VELODYNE 1
+ENV SPOT_VELODYNE_XYZ "-0.25 0 -0.09"
+
+# Update entrypoint to source setup.bash
 RUN sed --in-place --expression \
       '$isource "/catkin_ws/devel/setup.bash"' \
       /ros_entrypoint.sh
