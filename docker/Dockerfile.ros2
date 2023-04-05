@@ -1,0 +1,43 @@
+FROM osrf/ros:humble-desktop-full
+SHELL ["/bin/bash", "-c"]
+
+# Install tools
+RUN apt-get update && apt-get -y install \
+    git \
+    python3-pip \
+    tmux \
+    wget \
+    ros-$ROS_DISTRO-joint-state-publisher-gui ros-$ROS_DISTRO-tf-transformations ros-$ROS_DISTRO-xacro
+RUN pip3 install bosdyn-client bosdyn-mission bosdyn-api bosdyn-core
+RUN wget -q -O /tmp/ros-humble-bosdyn-msgs_0.0.0-0jammy_amd64.deb https://github.com/bdaiinstitute/bosdyn_msgs/releases/download/v0.0.0-humble/ros-humble-bosdyn-msgs_0.0.0-0jammy_amd64.deb
+RUN sudo dpkg -i /tmp/ros-humble-bosdyn-msgs_0.0.0-0jammy_amd64.deb
+RUN rm /tmp/ros-humble-bosdyn-msgs_0.0.0-0jammy_amd64.deb
+RUN wget -q -O /tmp/ros-humble-spot-msgs_0.0.0-0jammy_amd64.deb https://github.com/bdaiinstitute/spot_ros2/releases/download/spot_msgs-v0.0-0/ros-humble-spot-msgs_0.0.0-0jammy_amd64.deb
+RUN sudo dpkg -i /tmp/ros-humble-spot-msgs_0.0.0-0jammy_amd64.deb
+RUN rm /tmp/ros-humble-spot-msgs_0.0.0-0jammy_amd64.deb
+
+# Pull source code
+RUN mkdir -p ./catkin_ws/src
+WORKDIR /catkin_ws/src
+RUN git clone https://github.com/bdaiinstitute/spot_ros2.git
+
+# Install dependencies and build
+WORKDIR /catkin_ws
+RUN source /opt/ros/$ROS_DISTRO/setup.bash && apt-get update && \
+    rosdep install --from-paths src --ignore-src -r -y
+RUN source /opt/ros/$ROS_DISTRO/setup.bash && colcon build --symlink-install
+
+WORKDIR /catkin_ws/src/spot_ros2
+RUN git clone https://github.com/bdaiinstitute/spot_wrapper.git
+RUN pip3 install -e spot_wrapper
+
+ENV BOSDYN_CLIENT_USERNAME=ros
+ENV BOSDYN_CLIENT_PASSWORD=1234567890qw
+ENV SPOT_IP=192.168.50.3
+
+# Update entrypoint to source setup.bash
+RUN sed --in-place --expression \
+      '$isource "/catkin_ws/install/setup.bash"' \
+      /ros_entrypoint.sh
+
+ENTRYPOINT ["/ros_entrypoint.sh"]
