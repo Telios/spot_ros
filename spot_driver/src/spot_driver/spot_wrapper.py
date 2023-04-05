@@ -419,6 +419,7 @@ class SpotWrapper:
         self._last_trajectory_command_precise = None
         self._last_velocity_command_time = None
         self._last_docking_command = None
+        self._use_point_cloud_service = False # if someone uses velodyne_driver won't need to use internal pointcloud service
 
         self._front_image_requests = []
         for source in front_image_sources:
@@ -607,7 +608,7 @@ class SpotWrapper:
                 self._estop_monitor,
             ]
 
-            if self._point_cloud_client:
+            if self._point_cloud_client and self._use_point_cloud_service:
                 self._point_cloud_task = AsyncPointCloudService(
                     self._point_cloud_client,
                     self._logger,
