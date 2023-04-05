@@ -337,8 +337,9 @@ class SpotROS:
         """
         data = self.spot_wrapper.point_clouds
         if data:
-            point_cloud_msg = GetPointCloudMsg(data[0], self.spot_wrapper)
-            self.point_cloud_pub.publish(point_cloud_msg)
+            #Erorrs with SpotCORE1
+            #point_cloud_msg = GetPointCloudMsg(data[0], self.spot_wrapper)
+            #self.point_cloud_pub.publish(point_cloud_msg)
 
             self.populate_lidar_static_transforms(data[0])
 
@@ -1532,10 +1533,12 @@ class SpotROS:
             "depth/frontright/depth_in_visual", Image, queue_size=10
         )
 
-        # EAP Pointcloud #
+        # EAP Pointcloud # NOT SUPPORTED WITH SpotCORE1
+        '''
         self.point_cloud_pub = rospy.Publisher(
             "lidar/points", PointCloud2, queue_size=10
         )
+        '''
         self.camera_pub_to_async_task_mapping = {
             self.frontleft_image_pub: "front_image",
             self.frontright_image_pub: "front_image",

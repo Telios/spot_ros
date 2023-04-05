@@ -4,9 +4,11 @@ FROM osrf/ros:noetic-desktop-full
 SHELL ["/bin/bash", "-c"]
 
 # Install tools
-RUN apt-get update && apt-get -y install git \
+RUN apt-get update && apt-get -y install \
+    git \
     python3-pip \
-    python3-catkin-tools 
+    python3-catkin-tools \
+    tmux
 RUN pip3 install bosdyn-client bosdyn-mission bosdyn-api bosdyn-core
 
 # Pull source code
@@ -17,7 +19,7 @@ RUN git clone https://github.com/telios/spot_ros.git
 # Install dependencies and build
 WORKDIR /catkin_ws
 RUN source /opt/ros/noetic/setup.bash && apt-get update && \
-    rosdep update && rosdep install --from-paths src --ignore-src -r -y
+    rosdep install --from-paths src --ignore-src -r -y
 RUN source /opt/ros/noetic/setup.bash && catkin build
 
 # Set environment variables
