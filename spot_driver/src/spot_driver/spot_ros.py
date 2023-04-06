@@ -1533,19 +1533,32 @@ class SpotROS:
             "depth/frontright/depth_in_visual", Image, queue_size=10
         )
 
-        # EAP Pointcloud # NOT SUPPORTED WITH SpotCORE1
-        '''
+        # EAP Pointcloud
         self.point_cloud_pub = rospy.Publisher(
             "lidar/points", PointCloud2, queue_size=10
         )
-        '''
+    
         self.camera_pub_to_async_task_mapping = {
             self.frontleft_image_pub: "front_image",
+            self.frontleft_depth_pub: "front_image",
+            self.frontleft_image_info_pub: "front_image",
             self.frontright_image_pub: "front_image",
+            self.frontright_depth_pub: "front_image",
+            self.frontright_image_info_pub: "front_image",
             self.back_image_pub: "rear_image",
+            self.back_depth_pub: "rear_image",
+            self.back_image_info_pub: "rear_image",
             self.right_image_pub: "side_image",
+            self.right_depth_pub: "side_image",
+            self.right_image_info_pub: "side_image",
             self.left_image_pub: "side_image",
+            self.left_depth_pub: "side_image",
+            self.left_image_info_pub: "side_image",
             self.hand_image_color_pub: "hand_image",
+            self.hand_image_mono_pub: "hand_image",
+            self.hand_image_mono_info_pub: "hand_image",
+            self.hand_depth_pub: "hand_image",
+            self.hand_depth_in_hand_color_pub: "hand_image",
         }
 
         # Image Camera Info #
