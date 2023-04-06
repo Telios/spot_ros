@@ -9,10 +9,9 @@ RUN apt-get update && apt-get -y install \
     tmux
 RUN pip3 install bosdyn-client bosdyn-mission bosdyn-api bosdyn-core
 
-# Pull source code
+# Copy src files
 RUN mkdir -p ./catkin_ws/src
-WORKDIR /catkin_ws/src
-RUN git clone https://github.com/telios/spot_ros.git
+COPY --link ./ /catkin_ws/src/spot_ros
 
 # Install dependencies and build
 WORKDIR /catkin_ws
